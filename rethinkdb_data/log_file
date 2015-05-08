@@ -1,8 +1,0 @@
-2015-05-07T14:35:48.730827000 0.600411s notice: Recursively removing directory /Users/mjl/Dropbox/dev/local-python/tinkering_beta/rethinkdb_data/tmp
-2015-05-07T14:35:48.733312000 0.602898s notice: Initializing directory /Users/mjl/Dropbox/dev/local-python/tinkering_beta/rethinkdb_data
-2015-05-07T14:35:48.733387000 0.602970s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Users/mjl/Dropbox/dev/local-python/tinkering_beta/rethinkdb_data' did not already exist or is empty.)
-2015-05-07T14:35:48.733403000 0.602985s notice: Running rethinkdb 2.0.1 (CLANG 4.2 (clang-425.0.28))...
-2015-05-07T14:35:48.737711000 0.607294s notice: Running on Darwin 14.3.0 x86_64
-2015-05-07T14:35:48.737742000 0.607324s notice: Loading data from directory /Users/mjl/Dropbox/dev/local-python/tinkering_beta/rethinkdb_data
-2015-05-07T14:35:48.870249000 0.739832s info: Automatically using cache size of 635 MB
-2015-05-07T14:35:48.871072000 0.740654s error: TCP socket creation failed for port 29015: Address already in use.
