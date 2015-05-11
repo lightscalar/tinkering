@@ -32,7 +32,8 @@ import pdb
 class Factor:
 
     def __init__(self, scope, cardinalities):
-        self.scope = sorted(scope)
+        self.scope = np.array(scope)
+        self.scope.sort()
         self.number_models = len(self.scope)
         self.is_unit_factor = self.number_models == 0
         self.cardinalities = cardinalities
@@ -72,7 +73,7 @@ class Factor:
 
     def reduce(self, model_id, model_value):
         # Reduce the factor by setting the specified model to its specified value.
-        model_index = self.scope.index(model_id)
+        model_index = np.where(self.scope == model_id)[0][0]
         cardinality = self.cardinalities[model_id]
 
         # Remove target model from the scope. Create a new factor.
@@ -105,6 +106,18 @@ class Factor:
 
         # Okay. We got ourselves a genYOUine product here.
         # INSERT MAGICK HERE.
+        scope = np.unique(np.r_[self.scope, other_factor.scope])
+        product_factor = Factor(scope, self.cardinalities)
+        self_idx = [idx for idx, mdl in enumerate(product_factor.scope) if mdl in self.scope]
+        other_idx = [idx for idx, mdl in enumerate(product_factor.scope) if mdl in other_factor.scope]
+
+        for phi_idx in range(product_factor.number_states):
+            prod_state = product_factor.get_assignment_from_index(phi_idx)
+            othr_phi = other_factor.phi[other_factor.get_index_from_assignment(prod_state[other_idx])]
+            self_phi = self.phi[self.get_index_from_assignment(prod_state[self_idx])]
+            product_factor.phi[phi_idx] = othr_phi * self_phi
+
+        return product_factor
 
 
 

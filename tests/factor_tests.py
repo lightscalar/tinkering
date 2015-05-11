@@ -20,7 +20,7 @@ def teardown():
 # BEGIN TESTS ------------------------------------------------------
 @with_setup(setup, teardown)
 def test_scope_ordering():
-    assert_equals(factor.scope, ['cancer', 'cold', 'fever'])
+    assert_array_equal(factor.scope, ['cancer', 'cold', 'fever'])
 
 
 @with_setup(setup, teardown)
@@ -97,7 +97,7 @@ def test_reduce_removes_models_from_scope():
     cardinalities = {'cancer': 2, 'cold': 2, 'fever': 4, 'drunk': 3}
     f = Factor(scope, cardinalities)
     g = f.reduce('cancer', 0)
-    assert_equals(g.scope, ['cold', 'drunk', 'fever'])
+    assert_array_equal(g.scope, ['cold', 'drunk', 'fever'])
 
 
 def test_reduction_is_correct():
@@ -162,4 +162,45 @@ def test_unit_factor_product():
     assert_equals(f.product(g), g)
     assert_equals(g.product(f), g)
 
+
+def test_scope_of_product():
+    cardinality = {'cancer':2, 'tumor':2}
+    f1 = Factor(['cancer', 'tumor'], cardinality)
+    f1.set_phi([0, 0], 0.2)
+    f1.set_phi([1, 0], 0.8)
+    f1.set_phi([0, 1], 0.01)
+    f1.set_phi([1, 1], 0.99)
+    f2 = Factor(['cancer'], cardinality)
+    f2.set_phi([0], 0.8)
+    f2.set_phi([1], 0.2)
+    f3 = f1.product(f2)
+    assert_array_equal(f3.scope, ['cancer', 'tumor'])
+
+
+def test_product_between_two_factors():
+    cardinality = {'cancer':2, 'tumor':2}
+    f1 = Factor(['cancer', 'tumor'], cardinality)
+    f1.set_phi([0, 0], 0.2)
+    f1.set_phi([1, 0], 0.8)
+    f1.set_phi([0, 1], 0.01)
+    f1.set_phi([1, 1], 0.99)
+    f2 = Factor(['cancer'], cardinality)
+    f2.set_phi([0], 0.8)
+    f2.set_phi([1], 0.2)
+    f3 = f1.product(f2)
+    assert_array_equal(f3.scope, ['cancer', 'tumor'])
+
+
+def test_product_between_two_factors():
+    cardinality = {'cancer':2, 'tumor':2}
+    f1 = Factor(['cancer', 'tumor'], cardinality)
+    f1.set_phi([0, 0], 0.2)
+    f1.set_phi([1, 0], 0.8)
+    f1.set_phi([0, 1], 0.01)
+    f1.set_phi([1, 1], 0.99)
+    f2 = Factor(['tumor'], cardinality)
+    f2.set_phi([0], 0.8)
+    f2.set_phi([1], 0.2)
+    f3 = f1.product(f2)
+    assert_array_almost_equal_nulp(f3.phi, [ 0.16 ,  0.64 ,  0.002,  0.198])
 

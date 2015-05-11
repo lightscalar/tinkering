@@ -68,6 +68,11 @@ def test_cannot_add_the_same_id():
 
 
 @with_setup(setup, teardown)
+def test_id_must_be_a_string():
+    assert_raises(ValueError, tk.define, 2, Bool(0.1))
+
+
+@with_setup(setup, teardown)
 def test_lists_cardinalities():
     cancer = tk.define('cancer', Bool(0.1))
     cold = tk.define('cold', Bool(0.1))

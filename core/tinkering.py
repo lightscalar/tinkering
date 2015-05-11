@@ -35,6 +35,8 @@ class Tinkering:
 
     def define(self, model_id, model):
         # Define a new model in this Tinkering context.
+        if type(model_id) != str:
+            raise ValueError('Model name must be a string.')
         if model_id in self.model_ids:
             raise ValueError('Cannot add %s as a model because there is already a model with that name.' % model_id)
         model.id = model_id
