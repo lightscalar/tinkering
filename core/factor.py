@@ -91,6 +91,14 @@ class Factor:
         reduced_factor.phi = self.phi[target_indices]
         return reduced_factor
 
+    def __mul__(self, other):
+        '''Overload the * operator to implement factor products.'''
+        return self.product(other)
+
+    def __rmul__(self, other):
+        '''Overload the * operator to implement factor products.'''
+        return self.product(other)
+
     def product(self, other_factor):
         # Computes the product between this factor and another one.
 
