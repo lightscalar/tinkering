@@ -220,3 +220,28 @@ def test_commutativity_with_operator_overloading():
     assert_array_almost_equal_nulp(f3.phi, [ 0.16 ,  0.64 ,  0.002,  0.198])
     assert_array_almost_equal_nulp(f4.phi, [ 0.16 ,  0.64 ,  0.002,  0.198])
 
+
+def test_marginalized_factor_removes_model():
+    cardinality = {'cancer':2, 'tumor':2}
+    f1 = Factor(['cancer', 'tumor'], cardinality)
+    f1.set_phi([0, 0], 0.2)
+    f1.set_phi([1, 0], 0.8)
+    f1.set_phi([0, 1], 0.01)
+    f1.set_phi([1, 1], 0.99)
+    f2 = f1.marginalize('tumor')
+    assert_array_equal(f2.scope, ['cancer'])
+
+
+def test_marginalized_phi_is_correct():
+    cardinality = {'cancer':2, 'tumor':2}
+    f1 = Factor(['cancer', 'tumor'], cardinality)
+    f1.set_phi([0, 0], 0.2)
+    f1.set_phi([1, 0], 0.8)
+    f1.set_phi([0, 1], 0.01)
+    f1.set_phi([1, 1], 0.99)
+    f2 = f1.marginalize('tumor')
+    f3 = f1.marginalize('cancer')
+    assert_array_almost_equal_nulp(f2.phi, [0.21, 1.79])
+    assert_array_almost_equal_nulp(f3.phi, [1, 1])
+
+

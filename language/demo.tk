@@ -1,0 +1,2 @@
+# Create a new file.
+has_lung_cancer ~ Flip(0.1)

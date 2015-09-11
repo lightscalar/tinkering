@@ -1,7 +1,7 @@
 '''Core Tinkering class. Holds a Universe.'''
 import pdb
 
-class Tinkering:
+class Tinkering(object):
 
     def __init__(self):
         self._models = {}
@@ -53,8 +53,11 @@ class Tinkering:
             model_id = model_or_id.id
 
         # Remove all instances of model from model and model_id dicts/lists.
-        self._models.pop(model_id)
-        self._model_ids.remove(model_id)
+        try:
+            self._models.pop(model_id)
+            self._model_ids.remove(model_id)
+        except:
+            raise ValueError('Model "%s" does not exist. Cannot delete.' % model_id)
 
 
 

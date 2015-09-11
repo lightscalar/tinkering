@@ -29,10 +29,11 @@ import numpy as np
 import pdb
 
 
-class Factor:
+class Factor(object):
 
     def __init__(self, scope, cardinalities):
         self.scope = np.array(scope)
+        self.scope_set = set(self.scope)
         self.scope.sort()
         self.number_models = len(self.scope)
         self.is_unit_factor = self.number_models == 0
@@ -112,8 +113,7 @@ class Factor:
         elif other_factor.is_unit_factor:
             return self
 
-        # Okay. We got ourselves a genYOUine product here.
-        # INSERT MAGICK HERE.
+        # Compute the product.
         scope = np.unique(np.r_[self.scope, other_factor.scope])
         product_factor = Factor(scope, self.cardinalities)
         self_idx = [idx for idx, mdl in enumerate(product_factor.scope) if mdl in self.scope]
@@ -126,6 +126,23 @@ class Factor:
             product_factor.phi[phi_idx] = othr_phi * self_phi
 
         return product_factor
+
+    def marginalize(self, model_id):
+        # Marginalize factor over the specified model id.
+        scope = np.delete(self.scope, np.where(self.scope==model_id))
+        marginalized_factor = Factor(scope, self.cardinalities)
+        marginal_idx = [idx for idx, mdl in enumerate(self.scope) if mdl in marginalized_factor.scope]
+        # Sum out model_id
+        for idx, val in enumerate(self.phi):
+            state = self.get_assignment_from_index(idx)
+            tgt_idx = marginalized_factor.get_index_from_assignment(state[marginal_idx])
+            marginalized_factor.phi[tgt_idx] += val
+        return marginalized_factor
+
+    def normalize(self):
+        # Normalize factor. I think this is the correct thing to do here. Nothing fancy.
+        # Distribution sums to unity.
+        self.phi = self.phi/np.sum(self.phi)
 
 
 

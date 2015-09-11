@@ -90,3 +90,11 @@ def test_model_deletion():
     assert_equals(tk.number_models, 0)
     assert_equals(tk.cardinalities, {})
     assert_equals(tk.models, {})
+
+
+@with_setup(setup, teardown)
+def test_cannot_delete_nonextant_model():
+    cancer = tk.define('cancer', Bool(0.1))
+    assert_equals(tk.model_ids, ['cancer'])
+    assert_raises(ValueError, tk.delete, 'notcancer')
+
