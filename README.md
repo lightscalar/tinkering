@@ -1,5 +1,5 @@
 ## Tinkering
-### Probabilistic Programming Using Bayesian Networks
+### Probabilistic Programming
 
 Tinkering aims allows users to easily construct Bayesian networks, etc.
 
