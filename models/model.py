@@ -1,4 +1,4 @@
-from tinkering_beta.core.factor import *
+from tinkering.core.factor import *
 
 class Model(object):
 

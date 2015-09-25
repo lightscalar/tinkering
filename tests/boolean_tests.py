@@ -1,4 +1,4 @@
-from tinkering_beta.basics import *
+from tinkering.basics import *
 from nose.tools import assert_equals, assert_almost_equals
 from nose import with_setup
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_equal

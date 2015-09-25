@@ -41,7 +41,7 @@ class Factor(object):
         self.cardinality_list = np.array([self.cardinalities[key] for key in self.scope])
         self.number_states = np.prod([self.cardinalities[key] for key in scope])
         self.phi = np.zeros(self.number_states)
-        self.set_strides()
+        self.set_stride()
 
     def set_stride(self):
         # Set the strides associated with in-scope models.
