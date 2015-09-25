@@ -1,7 +1,7 @@
 ## Tinkering
 ### Probabilistic Programming
 
-Tinkering aims allows users to easily construct Bayesian networks, etc.
+Tinkering aims allows users to easily construct Bayesian networks, build probabilistic models, and
 
 ### Installation.
 
