@@ -40,6 +40,7 @@ class Tinkering(object):
         if model_id in self.model_ids:
             raise ValueError('Cannot add %s as a model because there is already a model with that name.' % model_id)
         model.id = model_id
+        model.scope = [model.id]
         model.context = self
         self._models[model_id] = model
         self._model_ids.append(model_id)

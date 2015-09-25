@@ -43,7 +43,7 @@ class Factor(object):
         self.phi = np.zeros(self.number_states)
         self.set_strides()
 
-    def set_strides(self):
+    def set_stride(self):
         # Set the strides associated with in-scope models.
         if self.is_unit_factor:
             self.stride = np.array([])

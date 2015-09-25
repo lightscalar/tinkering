@@ -7,10 +7,11 @@ class Bool(Model):
         self.model_type = 'boolean'
         self.domain = [False, True]
         self.probability_of_true = probability_of_true
-        self.generate_factor()
 
     def generate_factor(self):
         # Generate a factor for this random variable.
+        # self.factor = Factor()
+        pass
 
     @property
     def cardinality(self):
