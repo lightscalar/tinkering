@@ -98,3 +98,25 @@ def test_cannot_delete_nonextant_model():
     assert_equals(tk.model_ids, ['cancer'])
     assert_raises(ValueError, tk.delete, 'notcancer')
 
+
+@with_setup(setup, teardown)
+def test_network_defined():
+    cancer = tk.define('cancer', Bool(0.1))
+    smoker = tk.define('smoker', Bool(0.1))
+    cancer_gene = tk.define('cancer_gene', Bool(0.1))
+    assert_array_equal(tk.network, {'cancer': [], 'smoker': [], \
+            'cancer_gene': []})
+
+
+@with_setup(setup, teardown)
+def test_node_deletion():
+    cancer = tk.define('cancer', Bool(0.1))
+    smoker = tk.define('smoker', Bool(0.1))
+    cancer_gene = tk.define('cancer_gene', Bool(0.1))
+    cancer.depends_on(smoker, cancer_gene)
+    assert_equals(tk.network['cancer'], ['smoker', 'cancer_gene'] )
+    tk.delete(smoker)
+    assert_equals(tk.network['cancer'], ['cancer_gene'] )
+
+
+

@@ -2,26 +2,27 @@
 
     DESCRIPTION
     ---
-    Suppose we have random variables A, B, C, ..., that can take values Val(A), Val(B), ...
-    A factor is simply a mapping from the values of a collection of random variables to the
-    real line: i.e.,
+    Suppose we have random variables A, B, C, ..., that can take values Val(A),
+    Val(B), ...  A factor is simply a mapping from the values of a collection
+    of random variables to the real line: i.e.,
 
            Factor(A, B, C): Val(A,B,C) --> Positive Real Line
 
-    We can perform various operations on factors -- multiplying them, marginalizing them over
-    certain variables, etc.
+    We can perform various operations on factors -- multiplying them,
+    marginalizing them over certain variables, etc.
 
-    It will be common for us to represent conditional probability distributions as factors. for
-    example, if we have a simple Bayesian network with two variables A and B, then P(A|B)P(B)
-    is the factor defining the network. We can represent it as the product of two factors
+    It will be common for us to represent conditional probability distributions
+    as factors. for example, if we have a simple Bayesian network with two
+    variables A and B, then P(A|B)P(B) is the factor defining the network. We
+    can represent it as the product of two factors
             H1(A,B) = P(A|B)
     together with,
             H2(B) = P(B)
     Then we can simply compute,
             H3(A,B) = H1 * H2
-    And we are guaranteed that the multiplication occurs in the correct manner. Similarly, if we
-    are ultimately interested in the probability distribution over one variable or another, we
-    can marginalize:
+    And we are guaranteed that the multiplication occurs in the correct manner.
+    Similarly, if we are ultimately interested in the probability distribution
+    over one variable or another, we can marginalize:
             P(A) = H3(A,B).marginalize(B); or,
             P(B) = H3(A,B).marginalize(A); etc
 '''
