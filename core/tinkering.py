@@ -1,5 +1,6 @@
 '''Core Tinkering class. Holds a Universe.'''
-import pdb
+from pdb import set_trace as stop
+
 
 class Tinkering(object):
 
@@ -47,6 +48,7 @@ class Tinkering(object):
         self._models[model_id] = model
         self._model_ids.append(model_id)
         self._network[model.id] = model.dependencies
+        model.update()
         return model
 
     def delete(self, model_or_id):
@@ -63,6 +65,9 @@ class Tinkering(object):
             del self._network[model_id]
             # Remove from all network dependencies.
             for key in self.network.keys():
+                if model_id in self.models[key].scope:
+                    self.models[key].scope.remove(model_id)
+                    self.models[key].update()
                 if model_id in self.network[key]:
                     self.network[key].remove(model_id)
         except:

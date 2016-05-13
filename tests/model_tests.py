@@ -5,8 +5,9 @@ from numpy.testing import assert_array_almost_equal_nulp, assert_array_equal
 
 
 def setup():
-    global tk
+    global tk, define
     tk = Tinkering()
+    define = tk.define
 
 
 def teardown():
@@ -29,3 +30,27 @@ def add_dependencies_test():
     assert_equals('smoker' in cancer.dependencies, True)
     assert_equals('cancer_gene' in cancer.dependencies, True)
     assert_equals(len(cancer.dependencies), 2)
+
+
+def ingest_numeric_data_test():
+    temps = [65.2, 78.2, 90.3]
+    data = define('height', Data(temps))
+    assert_equals(data.dtype, 'numeric')
+    assert_equals(len(data.bins), 26)
+    assert_equals(sum(data.counts), 3)
+    assert_equals(data._dependencies, [])
+    assert_equals(data.factor.phi.shape, (26,))
+
+
+def ingest_categorical_data_test():
+    temps = ['cat', 'kitten', 'anteater', 'barbie', 'xenomorph', 'crayfish']
+    srtd =  ['anteater', 'barbie', 'cat', 'crayfish', 'kitten', 'xenomorph']
+    data = define('animal', Data(temps))
+    assert_equals(data.dtype, 'categorical')
+    assert_equals(data.bins, srtd)
+    assert_array_equal(data.counts, [1,1,1,1,1,1])
+    assert_equals(data._dependencies, [])
+    assert_equals(data.factor.phi.shape, (6,))
+
+
+

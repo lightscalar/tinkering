@@ -22,9 +22,9 @@ def test_create_bool():
 
 
 @with_setup(setup, teardown)
-def test_domain():
-    assert_equals(heads.domain, [False, True])
-    assert_equals(tails.domain, [False, True])
+def test_bins():
+    assert_equals(heads.bins, [False, True])
+    assert_equals(tails.bins, [False, True])
 
 
 @with_setup(setup, teardown)

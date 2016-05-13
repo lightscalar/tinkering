@@ -27,7 +27,7 @@
             P(B) = H3(A,B).marginalize(A); etc
 '''
 import numpy as np
-import pdb
+from pdb import set_trace as stop
 
 
 class Factor(object):
@@ -39,7 +39,8 @@ class Factor(object):
         self.number_models = len(self.scope)
         self.is_unit_factor = self.number_models == 0
         self.cardinalities = cardinalities
-        self.cardinality_list = np.array([self.cardinalities[key] for key in self.scope])
+        self.cardinality_list = np.array([self.cardinalities[key] for \
+                key in self.scope])
         self.number_states = np.prod([self.cardinalities[key] for key in scope])
         self.phi = np.zeros(self.number_states)
         self.set_stride()
@@ -74,7 +75,8 @@ class Factor(object):
         return self.phi[idx]
 
     def reduce(self, model_id, model_value):
-        # Reduce the factor by setting the specified model to its specified value.
+        # Reduce the factor by setting the specified model to its specified
+        # value.
         model_index = np.where(self.scope == model_id)[0][0]
         cardinality = self.cardinalities[model_id]
 
@@ -117,13 +119,17 @@ class Factor(object):
         # Compute the product.
         scope = np.unique(np.r_[self.scope, other_factor.scope])
         product_factor = Factor(scope, self.cardinalities)
-        self_idx = [idx for idx, mdl in enumerate(product_factor.scope) if mdl in self.scope]
-        other_idx = [idx for idx, mdl in enumerate(product_factor.scope) if mdl in other_factor.scope]
+        self_idx = [idx for idx, mdl in enumerate(product_factor.scope) if \
+                mdl in self.scope]
+        other_idx = [idx for idx, mdl in enumerate(product_factor.scope) if \
+                mdl in other_factor.scope]
 
         for phi_idx in range(product_factor.number_states):
             prod_state = product_factor.get_assignment_from_index(phi_idx)
-            othr_phi = other_factor.phi[other_factor.get_index_from_assignment(prod_state[other_idx])]
-            self_phi = self.phi[self.get_index_from_assignment(prod_state[self_idx])]
+            othr_phi = other_factor.phi[other_factor.\
+                    get_index_from_assignment(prod_state[other_idx])]
+            self_phi = self.phi[self.\
+                    get_index_from_assignment(prod_state[self_idx])]
             product_factor.phi[phi_idx] = othr_phi * self_phi
 
         return product_factor
@@ -132,17 +138,19 @@ class Factor(object):
         # Marginalize factor over the specified model id.
         scope = np.delete(self.scope, np.where(self.scope==model_id))
         marginalized_factor = Factor(scope, self.cardinalities)
-        marginal_idx = [idx for idx, mdl in enumerate(self.scope) if mdl in marginalized_factor.scope]
+        marginal_idx = [idx for idx, mdl in enumerate(self.scope) if \
+                mdl in marginalized_factor.scope]
         # Sum out model_id
         for idx, val in enumerate(self.phi):
             state = self.get_assignment_from_index(idx)
-            tgt_idx = marginalized_factor.get_index_from_assignment(state[marginal_idx])
+            tgt_idx = marginalized_factor.\
+                    get_index_from_assignment(state[marginal_idx])
             marginalized_factor.phi[tgt_idx] += val
         return marginalized_factor
 
     def normalize(self):
-        # Normalize factor. I think this is the correct thing to do here. Nothing fancy.
-        # Distribution sums to unity.
+        # Normalize factor. I think this is the correct thing to do here.
+        # Nothing fancy.  Distribution sums to unity.
         self.phi = self.phi/np.sum(self.phi)
 
 

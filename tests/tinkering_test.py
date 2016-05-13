@@ -5,8 +5,9 @@ from numpy.testing import assert_array_almost_equal_nulp, assert_array_equal
 
 
 def setup():
-    global tk
+    global tk, define
     tk = Tinkering()
+    define = tk.define
 
 
 def teardown():
@@ -119,4 +120,12 @@ def test_node_deletion():
     assert_equals(tk.network['cancer'], ['cancer_gene'] )
 
 
+@with_setup(setup, teardown)
+def test_dependency_deletion():
+    cancer = define('cancer', Bool(0.1))
+    smoker = define('smoker', Bool(0.1))
+    cancer.depends_on(smoker)
+    assert_equals(cancer.scope, ['cancer', 'smoker'])
+    tk.delete(smoker)
+    assert_equals(cancer.scope, ['cancer'])
 
