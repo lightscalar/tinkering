@@ -1,4 +1,4 @@
-from model import *
+from tinkering.models.model import *
 
 
 class Bool(Model):

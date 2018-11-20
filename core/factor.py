@@ -1,4 +1,4 @@
-'''Factors for making efficient probabilistic inference in Bayesian networks.
+"""Factors for making efficient probabilistic inference in Bayesian networks.
 
     DESCRIPTION
     ---
@@ -25,13 +25,12 @@
     over one variable or another, we can marginalize:
             P(A) = H3(A,B).marginalize(B); or,
             P(B) = H3(A,B).marginalize(A); etc
-'''
+"""
 import numpy as np
 from pdb import set_trace as stop
 
 
 class Factor(object):
-
     def __init__(self, scope, cardinalities):
         self.scope = np.array(scope)
         self.scope_set = set(self.scope)
@@ -39,9 +38,10 @@ class Factor(object):
         self.number_models = len(self.scope)
         self.is_unit_factor = self.number_models == 0
         self.cardinalities = cardinalities
-        self.cardinality_list = np.array([self.cardinalities[key] for \
-                key in self.scope])
-        self.number_states = np.prod([self.cardinalities[key] for key in scope])
+        self.cardinality_list = np.array(
+            [self.cardinalities[key] for key in self.scope]
+        )
+        self.number_states = int(np.prod([self.cardinalities[key] for key in scope]))
         self.phi = np.zeros(self.number_states)
         self.set_stride()
 
@@ -52,13 +52,13 @@ class Factor(object):
         else:
             stride = np.zeros(self.number_models, dtype=int)
             stride[0] = 1
-            for idx,model in enumerate(self.scope[0:-1]):
-                stride[idx+1] = self.cardinalities[model] * stride[idx]
+            for idx, model in enumerate(self.scope[0:-1]):
+                stride[idx + 1] = self.cardinalities[model] * stride[idx]
             self.stride = stride
 
     def get_assignment_from_index(self, index):
         # Return the assignment corresponding to a given index into PHI.
-        return (np.floor(index/self.stride) % self.cardinality_list).astype(int)
+        return (np.floor(index / self.stride) % self.cardinality_list).astype(int)
 
     def get_index_from_assignment(self, assignment):
         # Get the index corresponding to a particular assignment.
@@ -90,17 +90,17 @@ class Factor(object):
 
         # Find indices corresponding to specified model having specified value.
         stride = self.stride[model_index]
-        values = np.floor(np.arange(self.number_states)/stride) % cardinality
+        values = np.floor(np.arange(self.number_states) / stride) % cardinality
         target_indices = np.nonzero(values == model_value)[0]
         reduced_factor.phi = self.phi[target_indices]
         return reduced_factor
 
     def __mul__(self, other):
-        '''Overload the * operator to implement factor products.'''
+        """Overload the * operator to implement factor products."""
         return self.product(other)
 
     def __rmul__(self, other):
-        '''Overload the * operator to implement factor products.'''
+        """Overload the * operator to implement factor products."""
         return self.product(other)
 
     def product(self, other_factor):
@@ -119,42 +119,42 @@ class Factor(object):
         # Compute the product.
         scope = np.unique(np.r_[self.scope, other_factor.scope])
         product_factor = Factor(scope, self.cardinalities)
-        self_idx = [idx for idx, mdl in enumerate(product_factor.scope) if \
-                mdl in self.scope]
-        other_idx = [idx for idx, mdl in enumerate(product_factor.scope) if \
-                mdl in other_factor.scope]
+        self_idx = [
+            idx for idx, mdl in enumerate(product_factor.scope) if mdl in self.scope
+        ]
+        other_idx = [
+            idx
+            for idx, mdl in enumerate(product_factor.scope)
+            if mdl in other_factor.scope
+        ]
 
         for phi_idx in range(product_factor.number_states):
             prod_state = product_factor.get_assignment_from_index(phi_idx)
-            othr_phi = other_factor.phi[other_factor.\
-                    get_index_from_assignment(prod_state[other_idx])]
-            self_phi = self.phi[self.\
-                    get_index_from_assignment(prod_state[self_idx])]
+            othr_phi = other_factor.phi[
+                other_factor.get_index_from_assignment(prod_state[other_idx])
+            ]
+            self_phi = self.phi[self.get_index_from_assignment(prod_state[self_idx])]
             product_factor.phi[phi_idx] = othr_phi * self_phi
 
         return product_factor
 
     def marginalize(self, model_id):
         # Marginalize factor over the specified model id.
-        scope = np.delete(self.scope, np.where(self.scope==model_id))
+        scope = np.delete(self.scope, np.where(self.scope == model_id))
         marginalized_factor = Factor(scope, self.cardinalities)
-        marginal_idx = [idx for idx, mdl in enumerate(self.scope) if \
-                mdl in marginalized_factor.scope]
+        marginal_idx = [
+            idx
+            for idx, mdl in enumerate(self.scope)
+            if mdl in marginalized_factor.scope
+        ]
         # Sum out model_id
         for idx, val in enumerate(self.phi):
             state = self.get_assignment_from_index(idx)
-            tgt_idx = marginalized_factor.\
-                    get_index_from_assignment(state[marginal_idx])
+            tgt_idx = marginalized_factor.get_index_from_assignment(state[marginal_idx])
             marginalized_factor.phi[tgt_idx] += val
         return marginalized_factor
 
     def normalize(self):
         # Normalize factor. I think this is the correct thing to do here.
         # Nothing fancy.  Distribution sums to unity.
-        self.phi = self.phi/np.sum(self.phi)
-
-
-
-
-
-
+        self.phi = self.phi / np.sum(self.phi)

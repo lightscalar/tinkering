@@ -22,5 +22,4 @@ for k in arange(pop):
 gender = define('gender', Data(gender_data))
 height = define('height', Data(height_data))
 
-
-# height.depends_on(gender)
+height.depends_on(gender)
